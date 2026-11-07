@@ -56,11 +56,25 @@
 **Trade-off:** none.
 **Impact:** CI `build-ios` covers both; the static variant writes `demo/App_Resources/iOS/Podfile` at job time.
 
+### AD-008: `notti-android` 0.2.0 builds with NativeScript 9.1 defaults (2026-11-07, runtime pending)
+
+**Decision:** the plugin sets no Kotlin, AGP or compileSdk override; apps need minSdk 24 (template default).
+**Reason:** spike S3 build part: `ns build android` green with JDK 17 and the template defaults (compileSdk 36, minSdk 24; runtime AGP 8.12.1, Kotlin 2.4.10). `:app:dependencies` resolves `br.com.zeeplabs:notti-android:0.2.0` from Maven Central with `firebase-messaging:25.1.2`; Kotlin stdlib unified at 2.4.10. `ns typings android --aar` confirms the JVM names: `Notti.initializeForWrapper(...)` and `Notti.User.*` are static (`@JvmStatic` on nested objects), `NottiOptions(baseUrl, opensInAppUrls)` and `NottiOptions(baseUrl)` constructors.
+**Trade-off:** runtime proof (call from TS on an emulator) not done: this Mac has no AVD, system image or `cmdline-tools` (B-001).
+**Impact:** `public-api` can call `com.zeeplabs.notti.Notti.*` directly from TS, no Kotlin source in the plugin.
+
 ---
 
 ## Active Blockers
 
-None yet. M0 (backend `sdk_name`) gates the 0.1.0 release, not development.
+### B-001: No Android emulator or device on the dev Mac (2026-11-07)
+
+**Discovered:** package-foundation T6 (spike S3).
+**Impact:** S3 runtime proof, S4 no-JSON runtime behavior and T14 Android run cannot be checked; builds and typings are fine.
+**Workaround:** keep going with build-level proof; run the Android checks when a device exists.
+**Resolution:** Julio installs `cmdline-tools` + a system image and creates an AVD, or connects a physical device.
+
+M0 (backend `sdk_name`) gates the 0.1.0 release, not development.
 
 ---
 
