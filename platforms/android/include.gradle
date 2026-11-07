@@ -1,0 +1,4 @@
+// Keep in step with package.json "notti.android" (scripts/check-native-versions.js).
+dependencies {
+    implementation 'br.com.zeeplabs:notti-android:0.2.0'
+}
