@@ -1,0 +1,43 @@
+{
+  "name": "nativescript-notti",
+  "version": "0.0.0",
+  "description": "Notti push notifications and In-App Messages for NativeScript, on top of the native Notti iOS and Android SDKs",
+  "main": "dist/index",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "platforms",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "nativescript",
+    "push-notifications",
+    "in-app-messages",
+    "notti",
+    "ios",
+    "android"
+  ],
+  "author": "Julio Sousa",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeeplabs/zeep-notti-nativescript.git"
+  },
+  "nativescript": {
+    "platforms": {
+      "ios": "9.0.0",
+      "android": "9.0.0"
+    }
+  },
+  "peerDependencies": {
+    "@nativescript/core": ">=9.0.0 <10"
+  },
+  "devDependencies": {
+    "@nativescript/core": "~9.1.0",
+    "@nativescript/types": "~9.1.0",
+    "typescript": "~5.9.0"
+  },
+  "packageManager": "pnpm@10.15.0"
+}
