@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-11-07
-**Current Work:** `package-foundation` Execute: T1-T5, T8-T13, T15-T17 done; T6/T14 Android runtime and T7 blocked by B-001 (branch `feat/package-foundation`, local only)
+**Current Work:** `public-api` spec written (API-01..18), awaiting Julio's approval. `package-foundation` still 15/17 (T6/T14 Android runtime, T7 blocked by B-001)
 
 ---
 
