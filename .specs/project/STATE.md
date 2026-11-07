@@ -35,12 +35,12 @@
 **Trade-off:** apps must handle the click to open a link.
 **Impact:** `public-api` initialize options; README In-App section.
 
-### AD-005: Demo consumes the plugin through `link:..` (2026-11-07, partial)
+### AD-005: Demo consumes the plugin through `link:..` (2026-11-07)
 
 **Decision:** `demo/package.json` depends on `"nativescript-notti": "link:.."`; the demo also pins `@nativescript/ios` 9.1.0 and `@nativescript/android` 9.1.1 as devDependencies.
 **Reason:** the symlink (`demo/node_modules/nativescript-notti -> ../..`) let the CLI pick up `platforms/ios` (Podfile merged, Swift shim compiled) with no reinstall. Without the pinned runtimes the CLI runs `npm install @nativescript/ios` inside the pnpm workspace and fails (`Command npm failed with exit code 1`).
 **Trade-off:** `file:` and tarball forms were not needed, so not tried.
-**Impact:** Still open for T14: the bundler resolving `main: "dist/index"` to `index.ios.js`/`index.android.js` through the link.
+**Impact:** T14 closed S5: with `main: "dist/index"` the webpack build resolves `dist/index.ios.js` on iOS (simulator run reached `NottiSDK` through `Notti.initialize`) and `dist/index.android.js` on Android (the APK bundle contains the `initializeForWrapper` adapter). The plugin must be built (`pnpm build`, also run by `prepare`) before a demo build.
 
 ### AD-006: Swift shim works under the template's `SWIFT_VERSION = 4.2` (2026-11-07)
 

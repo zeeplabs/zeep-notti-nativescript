@@ -4,7 +4,6 @@
     </ActionBar>
 
     <StackLayout padding="16">
-        <Button text="Initialize" tap="{{ onInitialize }}" />
-        <Label text="{{ status }}" textWrap="true" marginTop="16" />
+        <Label text="Notti.initialize runs in app.ts at launch. See the console for the result." textWrap="true" />
     </StackLayout>
 </Page>
