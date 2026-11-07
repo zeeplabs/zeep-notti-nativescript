@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-11-07
-**Current Work:** `package-foundation` design approved (2026-11-07); tasks.md Draft (T1-T17, spikes first), awaiting approval; next: Execute T1
+**Current Work:** `package-foundation` Execute: T1-T5, T8-T13, T15-T17 done; T6/T14 Android runtime and T7 blocked by B-001 (branch `feat/package-foundation`, local only)
 
 ---
 
@@ -105,7 +105,8 @@ M0 (backend `sdk_name`) gates the 0.1.0 release, not development.
 
 ## Todos
 
-- [ ] `git init` the repo and create `zeeplabs/zeep-notti-nativescript` on GitHub (Julio's call)
+- [x] `git init` done locally (2026-11-07); [ ] create `zeeplabs/zeep-notti-nativescript` on GitHub and push (Julio's call), then prove CI
+- [ ] Run actionlint on `.github/` (download was denied in-session; needs Julio's OK or a local install)
 - [ ] Confirm the CocoaPods trunk read-only date before relying on trunk for future `NottiSDK` releases
 - [ ] Note: the local `zeep-notti-react-native` checkout is on `spike/ios-native-sdk` (0.8.0, dirty); read the RN reference from `origin/main`
 

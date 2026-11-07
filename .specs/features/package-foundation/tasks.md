@@ -2,7 +2,31 @@
 
 **Design**: `.specs/features/package-foundation/design.md`
 **Testing**: `.specs/codebase/TESTING.md`
-**Status**: Draft
+**Status**: In Progress (2026-11-07): 15/17 done; T7 and the Android runtime part of T6/T14 blocked by B-001
+
+## Progress
+
+| Task | Status | Commit | Evidence |
+| --- | --- | --- | --- |
+| T1 | Done | `2aab57e` | `pnpm install` ok |
+| T2 | Done | `3c200f4` | pack lists Podfile + include.gradle |
+| T3 | Done | `3ec19d4` | proved in T5 |
+| T4 | Done | `ad3f889` | AD-005 (`link:..`, pinned runtimes) |
+| T5 | Done | `3e1858c` | AD-006, AD-007: simulator log reached `NottiSDK`, dynamic + static |
+| T6 | Partial | `9dc6e69`, `a87a37b` | AD-008 build + deps + typings; emulator run blocked (B-001); typings from ABI (L-002) |
+| T7 | Blocked | - | needs a device (B-001) and a test Firebase project |
+| T8 | Done | `df4dc13` | lint + typecheck |
+| T9 | Done | `e8554ac` | 1 test |
+| T10 | Done | `873973e` | 3 tests |
+| T11 | Done | `ae43ab8` | 2 tests |
+| T12 | Done | `a87a37b` | 2 tests |
+| T13 | Done | `8cf43a4` | build + pack contents |
+| T14 | Partial | `bba94aa` | iOS simulator through `Notti.initialize`; Android APK bundle has the adapter, runtime blocked (B-001) |
+| T15 | Done | `fa41d5f` | 6 tests incl. drift fixtures |
+| T16 | Done (unproven) | `a0a7159` | YAML valid; actionlint not run (binary download denied); no GitHub repo yet |
+| T17 | Done | `f323663` | commitlint rejected a non-conventional message |
+
+Gate at `f323663`: lint, typecheck, 14 tests, build, native-versions green.
 
 Risk first: Phase 1 proves the native integration with the smallest possible code (spikes S1-S5) before
 any tooling or TS layering. If T5 (S1) fails both ways, STOP for Julio's decision (design, S1 row).

@@ -1,7 +1,7 @@
 # Roadmap
 
-**Current Milestone:** M0 - Backend accepts the NativeScript SDK
-**Status:** Planning
+**Current Milestone:** M1 (development) / M0 gates the release
+**Status:** In Progress
 
 ---
 
@@ -27,7 +27,7 @@
 
 ### Features
 
-**package-foundation** - PLANNED
+**package-foundation** - IN PROGRESS (2026-11-07; 15/17 tasks, branch `feat/package-foundation`; Android runtime + google-services spike blocked by B-001)
 
 - Single-package repo (AD-003): `src/` (TS API), `platforms/ios` (Podfile + Swift shim), `platforms/android` (`include.gradle`), `demo/` NativeScript Core app, pnpm, TS strict, lint, lefthook, commitlint
 - Risk spikes before any API work: Swift shim with `@_spi(Wrapper) import NottiSDK` compiles in a NativeScript iOS build; `-package-name` flag survives the NativeScript Podfile merge (static and `use_frameworks!`); `notti-android` 0.2.0 (Kotlin 2.0, compileSdk 36, AGP 9 built) builds inside a NativeScript 9 Android app; `google-services` plugin applied from the app's `App_Resources`
