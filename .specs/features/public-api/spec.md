@@ -1,5 +1,7 @@
 # Public API Specification
 
+**Status**: Approved (2026-11-07; decisions AD-009, AD-010, AD-011)
+
 ## Problem Statement
 
 `nativescript-notti` exposes only `Notti.initialize` (package-foundation). A NativeScript app still cannot
@@ -172,26 +174,26 @@ without reading the RN docs.
 
 | Requirement ID | Story | Phase | Status |
 | --- | --- | --- | --- |
-| API-01 | P1: login | Design | Pending |
-| API-02 | P1: logout | Design | Pending |
-| API-03 | P1: User single-value methods (addTag, removeTag, email, phone) | Design | Pending |
-| API-04 | P1: addTags → NSDictionary / HashMap | Design | Pending |
-| API-05 | P1: removeTags → NSArray / ArrayList | Design | Pending |
-| API-06 | P1: non-string tag values/keys filtered with a warning (no values logged) | Design | Pending |
-| API-07 | P1: empty batches still forwarded | Design | Pending |
-| API-08 | P1: requestPermission resolves native boolean once | Design | Pending |
-| API-09 | P1: requestPermission resolves false, never rejects on denial | Design | Pending |
-| API-10 | P1: requestPermission rejects on synchronous native throw | Design | Pending |
-| API-11 | P1: setSubscription | Design | Pending |
-| API-12 | P1: setLocationSharingEnabled, no permission request | Design | Pending |
-| API-13 | P1: getDeviceId sync, null normalization | Design | Pending |
-| API-14 | P1: trackEvent | Design | Pending |
-| API-15 | P2: typed exports with JSDoc | Design | Pending |
-| API-16 | P2: README section | Design | Pending |
-| API-17 | Edge: pre-initialize calls forwarded, native decides | Design | Pending |
-| API-18 | Edge: destructured User methods work | Design | Pending |
+| API-01 | P1: login | Tasks | In Tasks |
+| API-02 | P1: logout | Tasks | In Tasks |
+| API-03 | P1: User single-value methods (addTag, removeTag, email, phone) | Tasks | In Tasks |
+| API-04 | P1: addTags → NSDictionary / HashMap | Tasks | In Tasks |
+| API-05 | P1: removeTags → NSArray / ArrayList | Tasks | In Tasks |
+| API-06 | P1: non-string tag values/keys filtered with a warning (no values logged) | Tasks | In Tasks |
+| API-07 | P1: empty batches still forwarded | Tasks | In Tasks |
+| API-08 | P1: requestPermission resolves native boolean once | Tasks | In Tasks |
+| API-09 | P1: requestPermission resolves false, never rejects on denial | Tasks | In Tasks |
+| API-10 | P1: requestPermission rejects on synchronous native throw | Tasks | In Tasks |
+| API-11 | P1: setSubscription | Tasks | In Tasks |
+| API-12 | P1: setLocationSharingEnabled, no permission request | Tasks | In Tasks |
+| API-13 | P1: getDeviceId sync, null normalization | Tasks | In Tasks |
+| API-14 | P1: trackEvent | Tasks | In Tasks |
+| API-15 | P2: typed exports with JSDoc | Tasks | In Tasks |
+| API-16 | P2: README section | Tasks | In Tasks |
+| API-17 | Edge: pre-initialize calls forwarded, native decides | Tasks | In Tasks |
+| API-18 | Edge: destructured User methods work | Tasks | In Tasks |
 
-**Coverage:** 18 total, 0 mapped to tasks, 18 unmapped ⚠️
+**Coverage:** 18 total, 18 mapped to tasks, 0 unmapped
 
 ---
 

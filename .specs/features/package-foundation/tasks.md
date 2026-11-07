@@ -198,7 +198,7 @@ and apply-plugin setup for a NativeScript 9 app; also build and launch with no J
 
 **Done when**:
 
-- [ ] AD-009 documents the exact setup and the no-JSON behavior
+- [ ] the next free AD documents the exact setup and the no-JSON behavior
 - [ ] No Firebase file tracked by git (`git status` clean of it)
 
 **Tests**: build

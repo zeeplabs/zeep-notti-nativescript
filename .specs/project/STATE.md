@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-11-07
-**Current Work:** `public-api` spec written (API-01..18), awaiting Julio's approval. `package-foundation` still 15/17 (T6/T14 Android runtime, T7 blocked by B-001)
+**Current Work:** `public-api` spec approved (AD-009..011); design.md + tasks.md (T1-T6) Draft, awaiting approval. `package-foundation` still 15/17 (B-001)
 
 ---
 
@@ -62,6 +62,26 @@
 **Reason:** spike S3 build part: `ns build android` green with JDK 17 and the template defaults (compileSdk 36, minSdk 24; runtime AGP 8.12.1, Kotlin 2.4.10). `:app:dependencies` resolves `br.com.zeeplabs:notti-android:0.2.0` from Maven Central with `firebase-messaging:25.1.2`; Kotlin stdlib unified at 2.4.10. `ns typings android --aar` confirms the JVM names: `Notti.initializeForWrapper(...)` and `Notti.User.*` are static (`@JvmStatic` on nested objects), `NottiOptions(baseUrl, opensInAppUrls)` and `NottiOptions(baseUrl)` constructors.
 **Trade-off:** runtime proof (call from TS on an emulator) not done: this Mac has no AVD, system image or `cmdline-tools` (B-001).
 **Impact:** `public-api` can call `com.zeeplabs.notti.Notti.*` directly from TS, no Kotlin source in the plugin.
+
+### AD-009: Calls before `initialize` are forwarded; the native SDK decides (2026-11-07)
+
+**Decision:** no TS queue; every method forwards as is (Julio: "igual o RN").
+**Reason:** parity with `react-native-notti`; no business logic in TS. Native rule (iOS and Android): email, phone and `logout` kept; `login`, tags, `setSubscription` dropped with one warning; Android `requestPermission` answers `false` with no dialog; `trackEvent` ignored.
+**Trade-off:** apps must call `initialize` first (documented).
+**Impact:** public-api API-17; README.
+
+### AD-010: Non-string tag entries are filtered in the facade (2026-11-07)
+
+**Decision:** `User.addTags`/`removeTags` drop entries whose key or value is not a string, with one `console.warn` naming the key (never the value). Julio left it to the agent's judgment.
+**Reason:** on Android a non-string would reach Kotlin's `Map<String, String>`/`List<String>` as another JVM type (risk of `ClassCastException` inside the SDK); iOS would send a non-string to the backend.
+**Trade-off:** small divergence from RN, which forwards as is.
+**Impact:** public-api API-06; facade logic, unit-tested.
+
+### AD-011: `requestPermission` resolves the native boolean and never rejects on denial (2026-11-07)
+
+**Decision:** `Promise<boolean>`, resolves `false` on denial or before `initialize`; rejects only when the native call throws synchronously (broken install).
+**Reason:** RN contract; an install error must surface.
+**Impact:** public-api API-08..10.
 
 ---
 

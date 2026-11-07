@@ -34,7 +34,7 @@
 - Minimum NativeScript version, iOS deployment target and Android min/compile SDK fixed
 - CI skeleton (lint, typecheck, unit tests, demo build iOS and Android)
 
-**public-api** - SPECIFY (2026-11-07, `.specs/features/public-api/spec.md`, API-01..18)
+**public-api** - DESIGN (2026-11-07; spec approved API-01..18, AD-009..011; design + tasks T1-T6 awaiting approval)
 
 - `Notti.initialize` through the wrapper entry points (`sdkName: "nativescript"`, `sdkVersion` = package version, `opensInAppURLs: false`)
 - `requestPermission`, `login`/`logout`, `setSubscription`, `setLocationSharingEnabled`, `getDeviceId`, `trackEvent`; `User` tags/email/phone
