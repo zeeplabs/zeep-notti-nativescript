@@ -1,1 +1,19 @@
-{"name":"nativescript-notti-demo","private":true,"version":"0.0.0"}
+{
+  "name": "nativescript-notti-demo",
+  "main": "app/app.ts",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "@nativescript/core": "~9.1.0",
+    "@nativescript/theme": "^3.1.0",
+    "nativescript-notti": "link:.."
+  },
+  "devDependencies": {
+    "@nativescript/types": "~9.0.0",
+    "@nativescript/webpack": "~5.0.25",
+    "typescript": "~6.0.0",
+    "nativescript": "~9.1.0",
+    "@nativescript/ios": "9.1.0",
+    "@nativescript/android": "9.1.1"
+  }
+}
