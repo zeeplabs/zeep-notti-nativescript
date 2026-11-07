@@ -11,6 +11,11 @@ export default defineConfig([
   tseslint.configs.recommended,
   prettierRecommended,
   {
+    // NativeScript's convention for native typings is a triple-slash references file.
+    files: ['references.d.ts'],
+    rules: { '@typescript-eslint/triple-slash-reference': 'off' },
+  },
+  {
     files: ['scripts/**/*.js'],
     languageOptions: {
       sourceType: 'commonjs',

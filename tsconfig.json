@@ -21,6 +21,7 @@
     ]
   },
   "include": [
+    "references.d.ts",
     "src",
     "test",
     "vitest.config.ts"
