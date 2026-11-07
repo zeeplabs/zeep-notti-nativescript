@@ -1,0 +1,110 @@
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+# No job uses secrets: the demo builds with empty keys (config.example.ts) and no
+# google-services.json.
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Lint files
+        run: pnpm lint
+
+      - name: Typecheck files
+        run: pnpm typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Run unit tests
+        run: pnpm test
+
+  native-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Check native SDK versions
+        run: node scripts/check-native-versions.js
+
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Install JDK
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Use the example demo config
+        run: cp demo/app/config.example.ts demo/app/config.local.ts
+
+      - name: Build demo for Android
+        working-directory: demo
+        run: pnpm exec ns build android
+
+  build-ios:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # NativeScript always emits `use_frameworks!`; AD-007 supports both linkages.
+        linkage: [dynamic, static]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Use the latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@ed7a3b1fda3918c0306d1b724322adc0b8cc0a90 # v1.7.0
+        with:
+          xcode-version: latest-stable
+
+      - name: Install xcodeproj for the NativeScript CLI
+        # The CLI runs `ruby -e "require 'xcodeproj'"` (L-001).
+        run: gem install xcodeproj --no-document
+
+      - name: Use the example demo config
+        run: cp demo/app/config.example.ts demo/app/config.local.ts
+
+      - name: Use static framework linkage
+        if: matrix.linkage == 'static'
+        run: echo "use_frameworks! :linkage => :static" > demo/App_Resources/iOS/Podfile
+
+      - name: Build demo for the iOS simulator
+        working-directory: demo
+        run: pnpm exec ns build ios
