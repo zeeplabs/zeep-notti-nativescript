@@ -35,6 +35,27 @@
 **Trade-off:** apps must handle the click to open a link.
 **Impact:** `public-api` initialize options; README In-App section.
 
+### AD-005: Demo consumes the plugin through `link:..` (2026-11-07, partial)
+
+**Decision:** `demo/package.json` depends on `"nativescript-notti": "link:.."`; the demo also pins `@nativescript/ios` 9.1.0 and `@nativescript/android` 9.1.1 as devDependencies.
+**Reason:** the symlink (`demo/node_modules/nativescript-notti -> ../..`) let the CLI pick up `platforms/ios` (Podfile merged, Swift shim compiled) with no reinstall. Without the pinned runtimes the CLI runs `npm install @nativescript/ios` inside the pnpm workspace and fails (`Command npm failed with exit code 1`).
+**Trade-off:** `file:` and tarball forms were not needed, so not tried.
+**Impact:** Still open for T14: the bundler resolving `main: "dist/index"` to `index.ios.js`/`index.android.js` through the link.
+
+### AD-006: Swift shim works under the template's `SWIFT_VERSION = 4.2` (2026-11-07)
+
+**Decision:** no Swift version override is required from apps.
+**Reason:** spike S1: demo built with `SWIFT_VERSION = 4.2` (checked with `-showBuildSettings`); `@_spi(Wrapper) import NottiSDK` compiled; the generated `demo-Swift.h` exposes `+[NottiNativeScript initializeWithAppId:clientKey:baseUrl:sdkVersion:]`; on an iOS 27.1 simulator JS reached `NottiSDK` (SDK log `Notti.initialize ignored: invalid appId, clientKey or baseUrl` with the empty dev keys, then `[notti-demo] initialize returned`).
+**Trade-off:** none found. Xcode 27.2.
+**Impact:** README needs no Swift version step. The Obj-C facade of `NottiSDK` (`NottiNotifications`, `NottiUser`, `NottiInAppMessages`, `NottiSubscription`, `NottiSDKFacade`, `NottiLogLevel`) is also visible to TS (`typings/ios/NottiSDK.d.ts`); `public-api` should call it directly and add Swift only where the Obj-C facade lacks a call.
+
+### AD-007: Both CocoaPods linkage modes supported (2026-11-07)
+
+**Decision:** support NativeScript's default `use_frameworks!` (dynamic) and `use_frameworks! :linkage => :static`.
+**Reason:** spike S2: both built and ran on the simulator with the shim reaching `NottiSDK`; with static linkage `NottiSDK` is an `ar` archive. `-package-name NottiSDK` from the pod's `pod_target_xcconfig` needed no plugin `post_install`.
+**Trade-off:** none.
+**Impact:** CI `build-ios` covers both; the static variant writes `demo/App_Resources/iOS/Podfile` at job time.
+
 ---
 
 ## Active Blockers
@@ -45,7 +66,12 @@ None yet. M0 (backend `sdk_name`) gates the 0.1.0 release, not development.
 
 ## Lessons Learned
 
-None yet.
+### L-001: NativeScript CLI needs `xcodeproj` on the `ruby` in PATH (2026-11-07)
+
+**Context:** first `ns build ios` on this Mac.
+**Problem:** the CLI runs `ruby -e "require 'xcodeproj'"`; `/usr/bin/ruby` (2.6) has no gem, and Homebrew CocoaPods keeps its gems in its own `GEM_HOME`. Setting only `GEM_PATH` to that dir then broke `pod` (`Could not find 'base64'`).
+**Solution:** `PATH=/opt/homebrew/opt/ruby/bin:$PATH` and `GEM_PATH=/opt/homebrew/Cellar/cocoapods/<ver>/libexec:<ruby default gem paths>` (see TESTING.md).
+**Prevents:** losing time on the same env failure; CI runners use their own Ruby with the gems installed.
 
 ---
 
