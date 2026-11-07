@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-11-07
-**Current Work:** `public-api` spec approved (AD-009..011); design.md + tasks.md (T1-T6) Draft, awaiting approval. `package-foundation` still 15/17 (B-001)
+**Current Work:** `public-api` done on branch `feat/public-api` (T1-T6; Android runtime pending B-001). Next: specify `events-and-in-app`. `package-foundation` still 15/17 (B-001)
 
 ---
 

@@ -2,7 +2,18 @@
 
 **Design**: `.specs/features/public-api/design.md`
 **Testing**: `.specs/codebase/TESTING.md`
-**Status**: Draft
+**Status**: Done (2026-11-07), Android runtime pending B-001
+
+## Progress
+
+| Task | Status | Commit | Evidence |
+| --- | --- | --- | --- |
+| T1 | Done | `d70c4d3` | 22 facade tests (forwarding, AD-010 filter + warn without values, empty batches, destructuring) |
+| T2 | Done | `07c5c1a` | 14 iOS adapter tests |
+| T3 | Done | `85e1557` | 13 Android adapter tests; quick gate green (56 tests) |
+| T4 | Done | `1b27cec` | `dist/index.d.ts` exports `NottiApi`, `NottiUserApi`; build `lib` gained `DOM` for `console` (NativeScript template does the same) |
+| T5 | Done (iOS run, Android build) | `b707307` | iOS 27.1 simulator: all 15 methods ran with no JS error; `getDeviceId -> null`, `requestPermission -> false` (SDK not initialized with empty keys). Android APK bundle contains the adapter; runtime and the `NottiPermissionCallback` interface proxy unproven (B-001) |
+| T6 | Done | `3e50bbb` | README API table, pre-initialize rule, tag filter note |
 
 ---
 
