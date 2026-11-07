@@ -3,7 +3,14 @@
         <Label text="Notti demo" />
     </ActionBar>
 
-    <StackLayout padding="16">
-        <Label text="Notti.initialize runs in app.ts at launch. See the console for the result." textWrap="true" />
-    </StackLayout>
+    <ScrollView>
+        <StackLayout padding="16">
+            <Label text="Notti.initialize runs in app.ts at launch, then every method below runs once. See the console." textWrap="true" marginBottom="12" />
+            <Repeater items="{{ actions }}">
+                <Repeater.itemTemplate>
+                    <Button text="{{ label }}" tap="{{ $parents['Page'].onAction }}" />
+                </Repeater.itemTemplate>
+            </Repeater>
+        </StackLayout>
+    </ScrollView>
 </Page>
