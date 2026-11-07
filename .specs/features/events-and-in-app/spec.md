@@ -1,6 +1,6 @@
 # Events and In-App Specification
 
-**Status**: Draft (context: `context.md`, Julio chose on-demand native listeners)
+**Status**: Approved (2026-11-07; AD-012; EVT-16 and EVT-19 confirmed by Julio)
 
 ## Problem Statement
 
@@ -175,28 +175,28 @@ can open the link or deep link myself (AD-004).
 
 | Requirement ID | Story | Phase | Status |
 | --- | --- | --- | --- |
-| EVT-01 | P1 clicked: one native listener per JS listener | Design | Pending |
-| EVT-02 | P1 clicked: idempotent remove detaches native | Design | Pending |
-| EVT-03 | P1 clicked: no native listener when none in JS | Design | Pending |
-| EVT-04 | P1 launch: getInitialNotificationClick → takeInitialClick, once | Design | Pending |
-| EVT-05 | P1 launch: works before initialize | Design | Pending |
-| EVT-06 | P1 received: attach/deliver | Design | Pending |
-| EVT-07 | P1 received: native replay asymmetry passed through | Design | Pending |
-| EVT-08 | P1 deviceIdChanged | Design | Pending |
-| EVT-09 | P1 In-App: attach/deliver | Design | Pending |
-| EVT-10 | P1 In-App: action url/deeplink lowercase | Design | Pending |
-| EVT-11 | P1 In-App: other/absent action → null | Design | Pending |
-| EVT-12 | P1 In-App: listener before initialize attached | Design | Pending |
-| EVT-13 | P1 payload: title/body null, never undefined | Design | Pending |
-| EVT-14 | P1 payload: data plain object, {} when empty | Design | Pending |
-| EVT-15 | P1 payload: plain JS objects | Design | Pending |
-| EVT-16 | P2 callback errors isolated | Design | Pending |
-| EVT-17 | P2 types + JSDoc | Design | Pending |
-| EVT-18 | P2 README events section | Design | Pending |
-| EVT-19 | Edge: unknown event name → TypeError | Design | Pending |
-| EVT-20 | Edge: duplicate callbacks not deduped; remove inside callback safe | Design | Pending |
+| EVT-01 | P1 clicked: one native listener per JS listener | Tasks | In Tasks |
+| EVT-02 | P1 clicked: idempotent remove detaches native | Tasks | In Tasks |
+| EVT-03 | P1 clicked: no native listener when none in JS | Tasks | In Tasks |
+| EVT-04 | P1 launch: getInitialNotificationClick → takeInitialClick, once | Tasks | In Tasks |
+| EVT-05 | P1 launch: works before initialize | Tasks | In Tasks |
+| EVT-06 | P1 received: attach/deliver | Tasks | In Tasks |
+| EVT-07 | P1 received: native replay asymmetry passed through | Tasks | In Tasks |
+| EVT-08 | P1 deviceIdChanged | Tasks | In Tasks |
+| EVT-09 | P1 In-App: attach/deliver | Tasks | In Tasks |
+| EVT-10 | P1 In-App: action url/deeplink lowercase | Tasks | In Tasks |
+| EVT-11 | P1 In-App: other/absent action → null | Tasks | In Tasks |
+| EVT-12 | P1 In-App: listener before initialize attached | Tasks | In Tasks |
+| EVT-13 | P1 payload: title/body null, never undefined | Tasks | In Tasks |
+| EVT-14 | P1 payload: data plain object, {} when empty | Tasks | In Tasks |
+| EVT-15 | P1 payload: plain JS objects | Tasks | In Tasks |
+| EVT-16 | P2 callback errors isolated | Tasks | In Tasks |
+| EVT-17 | P2 types + JSDoc | Tasks | In Tasks |
+| EVT-18 | P2 README events section | Tasks | In Tasks |
+| EVT-19 | Edge: unknown event name → TypeError | Tasks | In Tasks |
+| EVT-20 | Edge: duplicate callbacks not deduped; remove inside callback safe | Tasks | In Tasks |
 
-**Coverage:** 20 total, 0 mapped to tasks, 20 unmapped ⚠️
+**Coverage:** 20 total, 20 mapped to tasks, 0 unmapped
 
 ---
 

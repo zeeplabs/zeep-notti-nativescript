@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-11-07
-**Current Work:** `events-and-in-app` spec + context written (EVT-01..20; Julio chose on-demand native listeners), awaiting approval. `public-api` done; `package-foundation` 15/17 (B-001)
+**Current Work:** `events-and-in-app` spec approved; design + tasks (T1-T6) Draft, awaiting approval. `public-api` done; `package-foundation` 15/17 (B-001)
 
 ---
 
