@@ -40,7 +40,7 @@
 - `requestPermission`, `login`/`logout`, `setSubscription`, `setLocationSharingEnabled`, `getDeviceId`, `trackEvent`; `User` tags/email/phone
 - TS types and argument mapping behind a native seam, unit-tested on both platform adapters
 
-**events-and-in-app** - PLANNED
+**events-and-in-app** - SPECIFY (2026-11-07; spec + context, EVT-01..20, AD-012 on-demand listeners)
 
 - `notificationReceived`, `notificationClicked`, `deviceIdChanged` listeners with removable subscriptions
 - Cold-start initial click (take-then-listen semantics, as in RN), reload/HMR safe

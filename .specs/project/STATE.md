@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-11-07
-**Current Work:** `public-api` done on branch `feat/public-api` (T1-T6; Android runtime pending B-001). Next: specify `events-and-in-app`. `package-foundation` still 15/17 (B-001)
+**Current Work:** `events-and-in-app` spec + context written (EVT-01..20; Julio chose on-demand native listeners), awaiting approval. `public-api` done; `package-foundation` 15/17 (B-001)
 
 ---
 
@@ -82,6 +82,13 @@
 **Decision:** `Promise<boolean>`, resolves `false` on denial or before `initialize`; rejects only when the native call throws synchronously (broken install).
 **Reason:** RN contract; an install error must surface.
 **Impact:** public-api API-08..10.
+
+### AD-012: Native event listeners are attached on demand, one per JS listener (2026-11-07)
+
+**Decision:** each `addEventListener`/`addClickListener` attaches its own native listener and `remove()` detaches it; nothing is attached at import or `initialize`; `getInitialNotificationClick()` calls native `takeInitialClick()` directly. No TS click slot or buffer (Julio: "Sob demanda").
+**Reason:** both native SDKs keep the last tap for `takeInitialClick()` only while no clicked listener is attached and never replay clicks; mirroring that gives exactly-once delivery with zero plugin state.
+**Trade-off:** a clicked listener added before the launch tap arrives (e.g. in `app.ts`) gets it live and `getInitialNotificationClick()` returns null; apps handle both paths (README), as the native docs say.
+**Impact:** events-and-in-app design; README startup example.
 
 ---
 
