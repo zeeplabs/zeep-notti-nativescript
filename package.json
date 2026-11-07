@@ -35,13 +35,31 @@
     "ios": "0.2.0",
     "android": "0.2.0"
   },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json"
+  },
   "peerDependencies": {
     "@nativescript/core": ">=9.0.0 <10"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@nativescript/core": "~9.1.0",
     "@nativescript/types": "~9.1.0",
-    "typescript": "~5.9.0"
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.7",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.1"
   },
-  "packageManager": "pnpm@10.15.0"
+  "packageManager": "pnpm@10.15.0",
+  "prettier": {
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "useTabs": false,
+    "printWidth": 100
+  }
 }

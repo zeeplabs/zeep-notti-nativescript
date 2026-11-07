@@ -1,0 +1,5 @@
+demo/
+dist/
+typings/
+pnpm-lock.yaml
+.specs/
