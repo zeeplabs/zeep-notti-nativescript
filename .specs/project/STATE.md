@@ -87,6 +87,13 @@ M0 (backend `sdk_name`) gates the 0.1.0 release, not development.
 **Solution:** `PATH=/opt/homebrew/opt/ruby/bin:$PATH` and `GEM_PATH=/opt/homebrew/Cellar/cocoapods/<ver>/libexec:<ruby default gem paths>` (see TESTING.md).
 **Prevents:** losing time on the same env failure; CI runners use their own Ruby with the gems installed.
 
+### L-002: `ns typings android` output for `notti-android` does not compile (2026-11-07)
+
+**Context:** package-foundation T12, first typecheck against the generated `android.d.ts`.
+**Problem:** the NativeScript 9.1 generator emits nameless `export module  {` blocks for 36 Kotlin sealed/internal types of the AAR (TS1437).
+**Solution:** `typings/android/notti-android.d.ts` is written from the SDK's ABI dump (`notti/api/notti.api`, public classes only) in the generator's shape; names were cross-checked against the generated file.
+**Prevents:** committing a broken generated file; on every native bump, diff `notti.api` and update the typings by hand.
+
 ---
 
 ## Deferred Ideas
