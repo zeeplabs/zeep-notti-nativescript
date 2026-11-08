@@ -24,6 +24,11 @@ export interface EventSubscription {
 }
 
 export interface NottiInAppMessagesApi {
+  /**
+   * Called when the user taps an In-App message button or image. The SDK never opens the link:
+   * handle `action` yourself (`url` or `deeplink`). `action` is `null` for buttons with nothing for
+   * the app to do, including `push_permission`, which the SDK runs itself.
+   */
   addClickListener(callback: (click: NottiInAppClick) => void): EventSubscription;
 }
 
@@ -76,6 +81,19 @@ export interface NottiApi {
    * and never sent to the Notti server.
    */
   trackEvent(name: string): void;
+  /**
+   * Listens for a Notti event. Each listener is attached to the native SDK when added and detached
+   * on `remove()`; the plugin keeps no events of its own.
+   *
+   * - `notificationReceived`: a push arrived while the app runs. On iOS the first listener also gets
+   *   pushes received before it was added; Android does not replay them.
+   * - `notificationClicked`: the user tapped a notification while a clicked listener was attached.
+   *   A tap that arrives with none attached (usually the one that launched the app) is kept for
+   *   `getInitialNotificationClick()` instead. Each tap reaches the app exactly once, by one path.
+   * - `deviceIdChanged`: the backend assigned a new Notti device id.
+   *
+   * A callback that throws is logged with `console.error` and never breaks other listeners.
+   */
   addEventListener(
     eventName: 'notificationReceived' | 'notificationClicked',
     callback: (payload: NotificationPayload) => void
@@ -84,6 +102,11 @@ export interface NottiApi {
     eventName: 'deviceIdChanged',
     callback: (deviceId: string) => void
   ): EventSubscription;
+  /**
+   * The notification tap kept while no `notificationClicked` listener was attached (normally the one
+   * that launched the app), once; `null` when there is none. Call it at startup and also listen for
+   * `notificationClicked`, so a launch tap is handled whichever path it takes.
+   */
   getInitialNotificationClick(): Promise<NotificationPayload | null>;
   InAppMessages: NottiInAppMessagesApi;
   User: NottiUserApi;
