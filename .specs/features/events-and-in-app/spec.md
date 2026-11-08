@@ -175,26 +175,26 @@ can open the link or deep link myself (AD-004).
 
 | Requirement ID | Story | Phase | Status |
 | --- | --- | --- | --- |
-| EVT-01 | P1 clicked: one native listener per JS listener | Tasks | In Tasks |
-| EVT-02 | P1 clicked: idempotent remove detaches native | Tasks | In Tasks |
-| EVT-03 | P1 clicked: no native listener when none in JS | Tasks | In Tasks |
-| EVT-04 | P1 launch: getInitialNotificationClick → takeInitialClick, once | Tasks | In Tasks |
-| EVT-05 | P1 launch: works before initialize | Tasks | In Tasks |
-| EVT-06 | P1 received: attach/deliver | Tasks | In Tasks |
-| EVT-07 | P1 received: native replay asymmetry passed through | Tasks | In Tasks |
-| EVT-08 | P1 deviceIdChanged | Tasks | In Tasks |
-| EVT-09 | P1 In-App: attach/deliver | Tasks | In Tasks |
-| EVT-10 | P1 In-App: action url/deeplink lowercase | Tasks | In Tasks |
-| EVT-11 | P1 In-App: other/absent action → null | Tasks | In Tasks |
-| EVT-12 | P1 In-App: listener before initialize attached | Tasks | In Tasks |
-| EVT-13 | P1 payload: title/body null, never undefined | Tasks | In Tasks |
-| EVT-14 | P1 payload: data plain object, {} when empty | Tasks | In Tasks |
-| EVT-15 | P1 payload: plain JS objects | Tasks | In Tasks |
-| EVT-16 | P2 callback errors isolated | Tasks | In Tasks |
-| EVT-17 | P2 types + JSDoc | Tasks | In Tasks |
-| EVT-18 | P2 README events section | Tasks | In Tasks |
-| EVT-19 | Edge: unknown event name → TypeError | Tasks | In Tasks |
-| EVT-20 | Edge: duplicate callbacks not deduped; remove inside callback safe | Tasks | In Tasks |
+| EVT-01 | P1 clicked: one native listener per JS listener | Execute | Verified |
+| EVT-02 | P1 clicked: idempotent remove detaches native | Execute | Verified |
+| EVT-03 | P1 clicked: no native listener when none in JS | Execute | Verified |
+| EVT-04 | P1 launch: getInitialNotificationClick → takeInitialClick, once | Execute | Verified (unit + iOS simulator; device/push pending) |
+| EVT-05 | P1 launch: works before initialize | Execute | Verified |
+| EVT-06 | P1 received: attach/deliver | Execute | Verified (unit + iOS simulator; device/push pending) |
+| EVT-07 | P1 received: native replay asymmetry passed through | Execute | Verified (unit + iOS simulator; device/push pending) |
+| EVT-08 | P1 deviceIdChanged | Execute | Verified |
+| EVT-09 | P1 In-App: attach/deliver | Execute | Verified (unit + iOS simulator; device/push pending) |
+| EVT-10 | P1 In-App: action url/deeplink lowercase | Execute | Verified |
+| EVT-11 | P1 In-App: other/absent action → null | Execute | Verified |
+| EVT-12 | P1 In-App: listener before initialize attached | Execute | Verified |
+| EVT-13 | P1 payload: title/body null, never undefined | Execute | Verified |
+| EVT-14 | P1 payload: data plain object, {} when empty | Execute | Verified |
+| EVT-15 | P1 payload: plain JS objects | Execute | Verified |
+| EVT-16 | P2 callback errors isolated | Execute | Verified |
+| EVT-17 | P2 types + JSDoc | Execute | Verified |
+| EVT-18 | P2 README events section | Execute | Verified |
+| EVT-19 | Edge: unknown event name → TypeError | Execute | Verified |
+| EVT-20 | Edge: duplicate callbacks not deduped; remove inside callback safe | Execute | Verified |
 
 **Coverage:** 20 total, 20 mapped to tasks, 0 unmapped
 

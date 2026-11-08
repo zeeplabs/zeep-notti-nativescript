@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-11-07
-**Current Work:** `events-and-in-app` spec approved; design + tasks (T1-T6) Draft, awaiting approval. `public-api` done; `package-foundation` 15/17 (B-001)
+**Current Work:** `events-and-in-app` done on branch `feat/events-and-in-app` (T1-T6; Android runtime and real push/launch tap pending a device). JS API now at RN parity. Next: specify `push-integration`. `package-foundation` 15/17 (B-001)
 
 ---
 
@@ -125,6 +125,7 @@ M0 (backend `sdk_name`) gates the 0.1.0 release, not development.
 
 ## Deferred Ideas
 
+- [ ] Fix the stale "replays a buffered click" comment in react-native-notti `ios/NottiImpl.swift:34` (the iOS SDK never replays clicks) — Captured during: events-and-in-app
 - [ ] Flavor helpers (Angular service, Vue composable) — Captured during: project init
 - [ ] NSE target creation through a NativeScript hook — Captured during: project init
 

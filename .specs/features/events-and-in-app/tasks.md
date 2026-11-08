@@ -2,7 +2,18 @@
 
 **Design**: `.specs/features/events-and-in-app/design.md`
 **Testing**: `.specs/codebase/TESTING.md`
-**Status**: Draft
+**Status**: Done (2026-11-07), Android runtime pending B-001
+
+## Progress
+
+| Task | Status | Commit | Evidence |
+| --- | --- | --- | --- |
+| T1 | Done | `23b1bb7` | 13 new facade tests (dispatch, TypeError, isolation without payload in log, idempotent remove, no dedupe, launch click, In-App) |
+| T2 | Done | `ec8f093` | 15 new iOS tests (fake NSDictionary, NSNull-like, actions) |
+| T3 | Done | `6b9f867` | 11 new Android tests (getters, `entrySet().iterator()`, enum `name()`); quick gate 96 tests |
+| T4 | Done | `6e71f2d` | `dist/index.d.ts` exports the event types; JSDoc (AD-012 exactly-once, replay difference) |
+| T5 | Done (iOS run, Android build) | `24f8944` | iOS 27.1 simulator: `getInitialNotificationClick -> null`, 4 listeners added, removed (double `remove()`), re-added, no JS error. Android build generated Java proxies for `NottiNotificationListener`, `NottiDeviceIdListener`, `NottiInAppClickListener`, `NottiPermissionCallback` (`com/tns/gen/com/zeeplabs/notti/`); runtime pending B-001. Real push delivery and launch tap need a device + real appId |
+| T6 | Done | `96a246d` | README Events section; the example typechecks against `dist/` (temporary check file, removed) |
 
 ---
 

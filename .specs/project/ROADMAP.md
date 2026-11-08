@@ -40,7 +40,7 @@
 - `requestPermission`, `login`/`logout`, `setSubscription`, `setLocationSharingEnabled`, `getDeviceId`, `trackEvent`; `User` tags/email/phone
 - TS types and argument mapping behind a native seam, unit-tested on both platform adapters
 
-**events-and-in-app** - DESIGN (2026-11-07; spec approved EVT-01..20, AD-012; design + tasks T1-T6 awaiting approval)
+**events-and-in-app** - DONE except device checks (2026-11-07; T1-T6 on branch `feat/events-and-in-app`, 96 tests; iOS simulator listeners attach/remove; Android build generated the listener proxies; B-001)
 
 - `notificationReceived`, `notificationClicked`, `deviceIdChanged` listeners with removable subscriptions
 - Cold-start initial click (take-then-listen semantics, as in RN), reload/HMR safe
