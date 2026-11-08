@@ -28,6 +28,7 @@ function makeFacade() {
     setLocationSharingEnabled: vi.fn(),
     trackEvent: vi.fn(),
     deviceId: 'device-1' as string | null | undefined,
+    addDeviceIdChangedListener: vi.fn(),
   };
 }
 
@@ -47,12 +48,25 @@ function makeUser() {
 
 let facade: ReturnType<typeof makeFacade>;
 let user: ReturnType<typeof makeUser>;
-let notifications: { requestPermission: ReturnType<typeof vi.fn> };
+let notifications: {
+  requestPermission: ReturnType<typeof vi.fn>;
+  addReceivedListener: ReturnType<typeof vi.fn>;
+  addClickedListener: ReturnType<typeof vi.fn>;
+  takeInitialClick: ReturnType<typeof vi.fn>;
+};
+let inApp: { addClickListener: ReturnType<typeof vi.fn> };
 
 beforeEach(() => {
   facade = makeFacade();
   user = makeUser();
-  notifications = { requestPermission: vi.fn() };
+  notifications = {
+    requestPermission: vi.fn(),
+    addReceivedListener: vi.fn(),
+    addClickedListener: vi.fn(),
+    takeInitialClick: vi.fn(),
+  };
+  inApp = { addClickListener: vi.fn() };
+  g.NottiInAppMessages = inApp;
   g.NottiSDKFacade = facade;
   g.NottiUser = user;
   g.NottiNotifications = notifications;
@@ -66,6 +80,7 @@ afterEach(() => {
     'NottiSDKFacade',
     'NottiUser',
     'NottiNotifications',
+    'NottiInAppMessages',
     'NSMutableDictionary',
     'NSArray',
   ]) {
@@ -188,5 +203,123 @@ describe('iOS adapter: requestPermission (API-08..10)', () => {
       throw error;
     });
     await expect(createIosNative().requestPermission()).rejects.toBe(error);
+  });
+});
+
+/** Stands in for an NSDictionary as the NativeScript runtime exposes it. */
+class FakeDictionary {
+  constructor(private readonly values: Record<string, unknown>) {}
+  objectForKey(key: string) {
+    return this.values[key];
+  }
+  get allKeys() {
+    const keys = Object.keys(this.values);
+    return { count: keys.length, objectAtIndex: (i: number) => keys[i] };
+  }
+}
+
+/** Stands in for NSNull if the runtime hands it to JS as an object. */
+class FakeNSNull {}
+
+const subscription = { remove: vi.fn() };
+
+describe('iOS adapter: notification listeners (EVT-01, 06, 13..15)', () => {
+  it.each(['addReceivedListener', 'addClickedListener'] as const)(
+    '%s attaches one native listener, returns its subscription and maps the payload',
+    (method) => {
+      notifications[method].mockReturnValue(subscription);
+      const listener = vi.fn();
+
+      const returned = createIosNative()[method](listener);
+      const nativeHandler = notifications[method].mock.calls[0]![0] as (d: unknown) => void;
+      nativeHandler(
+        new FakeDictionary({
+          title: 'Hi',
+          body: 'There',
+          data: new FakeDictionary({ screen: 'home', id: '7' }),
+        })
+      );
+
+      expect(notifications[method]).toHaveBeenCalledOnce();
+      expect(returned).toBe(subscription);
+      expect(listener).toHaveBeenCalledExactlyOnceWith({
+        title: 'Hi',
+        body: 'There',
+        data: { screen: 'home', id: '7' },
+      });
+    }
+  );
+
+  it.each([
+    ['absent keys', new FakeDictionary({})],
+    ['null values', new FakeDictionary({ title: null, body: null, data: null })],
+    ['NSNull values', new FakeDictionary({ title: new FakeNSNull(), body: new FakeNSNull() })],
+  ])('maps %s to title/body null and data {}', (_, dictionary) => {
+    const listener = vi.fn();
+    createIosNative().addReceivedListener(listener);
+    (notifications.addReceivedListener.mock.calls[0]![0] as (d: unknown) => void)(dictionary);
+
+    const delivered = listener.mock.calls[0]![0];
+    expect(delivered).toEqual({ title: null, body: null, data: {} });
+    expect(Object.getPrototypeOf(delivered)).toBe(Object.prototype);
+  });
+});
+
+describe('iOS adapter: device id and launch click (EVT-04, 08)', () => {
+  it('addDeviceIdChangedListener forwards the id from NottiSDKFacade', () => {
+    facade.addDeviceIdChangedListener.mockReturnValue(subscription);
+    const listener = vi.fn();
+
+    expect(createIosNative().addDeviceIdChangedListener(listener)).toBe(subscription);
+    (facade.addDeviceIdChangedListener.mock.calls[0]![0] as (id: string) => void)('device-2');
+
+    expect(listener).toHaveBeenCalledExactlyOnceWith('device-2');
+  });
+
+  it('takeInitialClick maps the native launch click', () => {
+    notifications.takeInitialClick.mockReturnValue(
+      new FakeDictionary({ title: 'Hi', data: new FakeDictionary({ screen: 'home' }) })
+    );
+    expect(createIosNative().takeInitialClick()).toEqual({
+      title: 'Hi',
+      body: null,
+      data: { screen: 'home' },
+    });
+  });
+
+  it.each([null, undefined])('takeInitialClick returns null when native returns %s', (value) => {
+    notifications.takeInitialClick.mockReturnValue(value);
+    expect(createIosNative().takeInitialClick()).toBeNull();
+  });
+});
+
+describe('iOS adapter: In-App clicks (EVT-09..11)', () => {
+  function deliver(dictionary: FakeDictionary) {
+    inApp.addClickListener.mockReturnValue(subscription);
+    const listener = vi.fn();
+    expect(createIosNative().addInAppClickListener(listener)).toBe(subscription);
+    (inApp.addClickListener.mock.calls[0]![0] as (d: unknown) => void)(dictionary);
+    return listener.mock.calls[0]![0];
+  }
+
+  it.each(['url', 'deeplink'])('keeps a %s action', (type) => {
+    const click = deliver(
+      new FakeDictionary({
+        messageId: 'm1',
+        buttonId: 'b1',
+        action: new FakeDictionary({ type, value: 'target' }),
+      })
+    );
+    expect(click).toEqual({ messageId: 'm1', buttonId: 'b1', action: { type, value: 'target' } });
+  });
+
+  it.each([
+    ['NSNull', new FakeNSNull()],
+    ['null', null],
+    ['another type', new FakeDictionary({ type: 'push_permission', value: 'x' })],
+    ['a missing value', new FakeDictionary({ type: 'url' })],
+  ])('maps %s to action null', (_, action) => {
+    const click = deliver(new FakeDictionary({ messageId: 'm1', buttonId: 'b1', action }));
+    expect(click.action).toBeNull();
   });
 });
