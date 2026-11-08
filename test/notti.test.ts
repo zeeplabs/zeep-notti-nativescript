@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { NottiNative } from '../src/native/types';
+import type {
+  NativeSubscription,
+  NotificationPayload,
+  NottiInAppClick,
+  NottiNative,
+} from '../src/native/types';
 import { createNotti } from '../src/notti';
 import { SDK_VERSION } from '../src/version';
 
@@ -30,6 +35,11 @@ function fakeNative(overrides: Partial<NottiNative> = {}) {
     clearEmail: record('clearEmail'),
     setPhone: record('setPhone'),
     clearPhone: record('clearPhone'),
+    addReceivedListener: () => ({ remove: () => {} }),
+    addClickedListener: () => ({ remove: () => {} }),
+    addDeviceIdChangedListener: () => ({ remove: () => {} }),
+    addInAppClickListener: () => ({ remove: () => {} }),
+    takeInitialClick: () => null,
     ...overrides,
   };
   return { native, calls };
@@ -168,5 +178,185 @@ describe('Notti.User (API-03..07, 18)', () => {
       ['login', ['u']],
       ['addTag', ['k', 'v']],
     ]);
+  });
+});
+
+/** A native listener method stub that keeps the attached listener and counts removals. */
+function listenerStub<T>() {
+  const attached: ((value: T) => void)[] = [];
+  let removals = 0;
+  const add = (listener: (value: T) => void): NativeSubscription => {
+    attached.push(listener);
+    return {
+      remove: () => {
+        removals += 1;
+      },
+    };
+  };
+  return {
+    add,
+    attached,
+    emit: (value: T) => attached.forEach((listener) => listener(value)),
+    removals: () => removals,
+  };
+}
+
+const payload: NotificationPayload = { title: 'Hi', body: null, data: { screen: 'home' } };
+const click: NottiInAppClick = {
+  messageId: 'm1',
+  buttonId: 'b1',
+  action: { type: 'url', value: 'https://notti.example' },
+};
+
+describe('Notti.addEventListener (EVT-01, 06, 08, 19)', () => {
+  it.each([
+    ['notificationReceived', 'addReceivedListener'],
+    ['notificationClicked', 'addClickedListener'],
+  ] as const)('%s attaches one native listener and delivers payloads', (event, method) => {
+    const stub = listenerStub<NotificationPayload>();
+    const { native } = fakeNative({ [method]: stub.add });
+    const callback = vi.fn();
+
+    createNotti(native).addEventListener(event, callback);
+    stub.emit(payload);
+
+    expect(stub.attached).toHaveLength(1);
+    expect(callback).toHaveBeenCalledExactlyOnceWith(payload);
+  });
+
+  it('deviceIdChanged delivers the device id string', () => {
+    const stub = listenerStub<string>();
+    const { native } = fakeNative({ addDeviceIdChangedListener: stub.add });
+    const callback = vi.fn();
+
+    createNotti(native).addEventListener('deviceIdChanged', callback);
+    stub.emit('device-2');
+
+    expect(callback).toHaveBeenCalledExactlyOnceWith('device-2');
+  });
+
+  it('attaches nothing until a listener is added (EVT-03)', () => {
+    const stub = listenerStub<NotificationPayload>();
+    createNotti(fakeNative({ addClickedListener: stub.add }).native);
+    expect(stub.attached).toHaveLength(0);
+  });
+
+  it('throws a TypeError naming the allowed events for an unknown name (EVT-19)', () => {
+    const notti = createNotti(fakeNative().native);
+    expect(() => notti.addEventListener('notificationOpened' as never, () => {})).toThrow(
+      TypeError
+    );
+    expect(() => notti.addEventListener('notificationOpened' as never, () => {})).toThrow(
+      /notificationReceived, notificationClicked or deviceIdChanged/
+    );
+  });
+
+  it('does not dedupe the same callback added twice (EVT-20)', () => {
+    const stub = listenerStub<NotificationPayload>();
+    const notti = createNotti(fakeNative({ addReceivedListener: stub.add }).native);
+    const callback = vi.fn();
+
+    notti.addEventListener('notificationReceived', callback);
+    notti.addEventListener('notificationReceived', callback);
+    stub.emit(payload);
+
+    expect(callback).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('subscriptions (EVT-02, 20)', () => {
+  it('remove() detaches the native listener once, however often it is called', () => {
+    const stub = listenerStub<NotificationPayload>();
+    const subscription = createNotti(
+      fakeNative({ addClickedListener: stub.add }).native
+    ).addEventListener('notificationClicked', () => {});
+
+    subscription.remove();
+    subscription.remove();
+
+    expect(stub.removals()).toBe(1);
+  });
+
+  it('remove() is safe inside the callback being delivered', () => {
+    const stub = listenerStub<NotificationPayload>();
+    const notti = createNotti(fakeNative({ addClickedListener: stub.add }).native);
+    const subscription = notti.addEventListener('notificationClicked', () => subscription.remove());
+
+    expect(() => stub.emit(payload)).not.toThrow();
+    expect(stub.removals()).toBe(1);
+  });
+});
+
+describe('callback errors are isolated (EVT-16)', () => {
+  it('catches a throwing callback, logs it without the payload, and keeps other listeners running', () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const stub = listenerStub<NotificationPayload>();
+    const notti = createNotti(fakeNative({ addReceivedListener: stub.add }).native);
+    const healthy = vi.fn();
+
+    notti.addEventListener('notificationReceived', () => {
+      throw new Error('app bug');
+    });
+    notti.addEventListener('notificationReceived', healthy);
+
+    expect(() => stub.emit(payload)).not.toThrow();
+    expect(healthy).toHaveBeenCalledOnce();
+    expect(error).toHaveBeenCalledOnce();
+    const logged = error.mock.calls[0]!.map(String).join(' ');
+    expect(logged).toContain('notificationReceived');
+    expect(logged).not.toContain('home');
+    expect(logged).not.toContain('Hi');
+  });
+
+  it('isolates In-App click callbacks too', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    const stub = listenerStub<NottiInAppClick>();
+    const notti = createNotti(fakeNative({ addInAppClickListener: stub.add }).native);
+
+    notti.InAppMessages.addClickListener(() => {
+      throw new Error('app bug');
+    });
+
+    expect(() => stub.emit(click)).not.toThrow();
+  });
+});
+
+describe('Notti.getInitialNotificationClick (EVT-04, 05)', () => {
+  it('resolves the native launch click', async () => {
+    const { native } = fakeNative({ takeInitialClick: () => payload });
+    await expect(createNotti(native).getInitialNotificationClick()).resolves.toEqual(payload);
+  });
+
+  it('resolves null when there is none', async () => {
+    await expect(
+      createNotti(fakeNative().native).getInitialNotificationClick()
+    ).resolves.toBeNull();
+  });
+
+  it('rejects when the native call throws', async () => {
+    const failure = new Error('not linked');
+    const { native } = fakeNative({
+      takeInitialClick: () => {
+        throw failure;
+      },
+    });
+    await expect(createNotti(native).getInitialNotificationClick()).rejects.toBe(failure);
+  });
+});
+
+describe('Notti.InAppMessages.addClickListener (EVT-09)', () => {
+  it('attaches one native listener and delivers the click', () => {
+    const stub = listenerStub<NottiInAppClick>();
+    const callback = vi.fn();
+    const subscription = createNotti(
+      fakeNative({ addInAppClickListener: stub.add }).native
+    ).InAppMessages.addClickListener(callback);
+
+    stub.emit(click);
+    subscription.remove();
+    subscription.remove();
+
+    expect(callback).toHaveBeenCalledExactlyOnceWith(click);
+    expect(stub.removals()).toBe(1);
   });
 });
