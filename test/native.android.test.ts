@@ -15,6 +15,18 @@ class FakePermissionCallback {
   constructor(readonly implementation: { onResult(granted: boolean): void }) {}
 }
 
+class FakeNotificationListener {
+  constructor(readonly implementation: { onNotification(n: unknown): void }) {}
+}
+
+class FakeDeviceIdListener {
+  constructor(readonly implementation: { onDeviceIdChanged(id: string): void }) {}
+}
+
+class FakeInAppClickListener {
+  constructor(readonly implementation: { onClick(c: unknown): void }) {}
+}
+
 class FakeHashMap {
   readonly entries: [unknown, unknown][] = [];
   put(key: unknown, value: unknown) {
@@ -40,6 +52,7 @@ function makeNotti() {
     setLocationSharingEnabled: vi.fn(),
     trackEvent: vi.fn(),
     getDeviceId: vi.fn((): string | null => 'device-1'),
+    addDeviceIdChangedListener: vi.fn(),
     User: {
       addTag: vi.fn(),
       addTags: vi.fn(),
@@ -50,7 +63,13 @@ function makeNotti() {
       setPhone: vi.fn(),
       clearPhone: vi.fn(),
     },
-    Notifications: { requestPermission: vi.fn() },
+    Notifications: {
+      requestPermission: vi.fn(),
+      addReceivedListener: vi.fn(),
+      addClickedListener: vi.fn(),
+      takeInitialClick: vi.fn(),
+    },
+    InAppMessages: { addClickListener: vi.fn() },
   };
 }
 
@@ -64,6 +83,9 @@ beforeEach(() => {
         Notti: notti,
         NottiOptions: FakeNottiOptions,
         NottiPermissionCallback: FakePermissionCallback,
+        NottiNotificationListener: FakeNotificationListener,
+        NottiDeviceIdListener: FakeDeviceIdListener,
+        NottiInAppClickListener: FakeInAppClickListener,
       },
     },
   };
@@ -197,5 +219,134 @@ describe('Android adapter: requestPermission (API-08..10)', () => {
       throw error;
     });
     await expect(native().requestPermission()).rejects.toBe(error);
+  });
+});
+
+/** A java.util.Map<String, String> as NativeScript exposes it (entrySet().iterator()). */
+function javaMap(values: Record<string, string>) {
+  return {
+    entrySet: () => {
+      const entries = Object.entries(values);
+      let index = 0;
+      return {
+        iterator: () => ({
+          hasNext: () => index < entries.length,
+          next: () => {
+            const [key, value] = entries[index++]!;
+            return { getKey: () => key, getValue: () => value };
+          },
+        }),
+      };
+    },
+  };
+}
+
+function notification(
+  title: string | null,
+  body: string | null,
+  data: Record<string, string> | null
+) {
+  return {
+    getTitle: () => title,
+    getBody: () => body,
+    getData: () => (data ? javaMap(data) : null),
+  };
+}
+
+function inAppClick(type: string | null, value = 'target') {
+  return {
+    getMessageId: () => 'm1',
+    getButtonId: () => 'b1',
+    getAction: () =>
+      type ? { getType: () => ({ name: () => type }), getValue: () => value } : null,
+  };
+}
+
+const subscription = { remove: vi.fn() };
+
+describe('Android adapter: notification listeners (EVT-01, 06, 13..15)', () => {
+  it.each(['addReceivedListener', 'addClickedListener'] as const)(
+    '%s wires a NottiNotificationListener, returns its subscription and maps the payload',
+    (method) => {
+      notti.Notifications[method].mockReturnValue(subscription);
+      const listener = vi.fn();
+
+      expect(native()[method](listener)).toBe(subscription);
+      const wired = notti.Notifications[method].mock.calls[0]![0] as FakeNotificationListener;
+      expect(wired).toBeInstanceOf(FakeNotificationListener);
+      wired.implementation.onNotification(notification('Hi', 'There', { screen: 'home' }));
+
+      expect(listener).toHaveBeenCalledExactlyOnceWith({
+        title: 'Hi',
+        body: 'There',
+        data: { screen: 'home' },
+      });
+    }
+  );
+
+  it('maps a notification without title, body or data to null, null, {}', () => {
+    const listener = vi.fn();
+    native().addReceivedListener(listener);
+    const wired = notti.Notifications.addReceivedListener.mock
+      .calls[0]![0] as FakeNotificationListener;
+    wired.implementation.onNotification(notification(null, null, null));
+
+    const delivered = listener.mock.calls[0]![0];
+    expect(delivered).toEqual({ title: null, body: null, data: {} });
+    expect(Object.getPrototypeOf(delivered)).toBe(Object.prototype);
+  });
+});
+
+describe('Android adapter: device id and launch click (EVT-04, 08)', () => {
+  it('addDeviceIdChangedListener wires a NottiDeviceIdListener', () => {
+    notti.addDeviceIdChangedListener.mockReturnValue(subscription);
+    const listener = vi.fn();
+
+    expect(native().addDeviceIdChangedListener(listener)).toBe(subscription);
+    const wired = notti.addDeviceIdChangedListener.mock.calls[0]![0] as FakeDeviceIdListener;
+    expect(wired).toBeInstanceOf(FakeDeviceIdListener);
+    wired.implementation.onDeviceIdChanged('device-2');
+
+    expect(listener).toHaveBeenCalledExactlyOnceWith('device-2');
+  });
+
+  it('takeInitialClick maps the native launch click', () => {
+    notti.Notifications.takeInitialClick.mockReturnValue(notification('Hi', null, { a: 'b' }));
+    expect(native().takeInitialClick()).toEqual({ title: 'Hi', body: null, data: { a: 'b' } });
+  });
+
+  it.each([null, undefined])('takeInitialClick returns null when native returns %s', (value) => {
+    notti.Notifications.takeInitialClick.mockReturnValue(value);
+    expect(native().takeInitialClick()).toBeNull();
+  });
+});
+
+describe('Android adapter: In-App clicks (EVT-09..11)', () => {
+  function deliver(click: ReturnType<typeof inAppClick>) {
+    notti.InAppMessages.addClickListener.mockReturnValue(subscription);
+    const listener = vi.fn();
+    expect(native().addInAppClickListener(listener)).toBe(subscription);
+    const wired = notti.InAppMessages.addClickListener.mock.calls[0]![0] as FakeInAppClickListener;
+    expect(wired).toBeInstanceOf(FakeInAppClickListener);
+    wired.implementation.onClick(click);
+    return listener.mock.calls[0]![0];
+  }
+
+  it.each([
+    ['URL', 'url'],
+    ['DEEPLINK', 'deeplink'],
+  ])('maps enum %s to lowercase %s', (name, type) => {
+    expect(deliver(inAppClick(name))).toEqual({
+      messageId: 'm1',
+      buttonId: 'b1',
+      action: { type, value: 'target' },
+    });
+  });
+
+  it.each([
+    ['no action', null],
+    ['an unknown enum value', 'PUSH_PERMISSION'],
+  ])('maps %s to action null', (_, type) => {
+    expect(deliver(inAppClick(type)).action).toBeNull();
   });
 });
