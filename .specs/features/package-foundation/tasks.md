@@ -23,7 +23,7 @@
 | T13 | Done | `8cf43a4` | build + pack contents |
 | T14 | Partial | `bba94aa` | iOS simulator through `Notti.initialize`; Android APK bundle has the adapter, runtime blocked (B-001) |
 | T15 | Done | `fa41d5f` | 6 tests incl. drift fixtures |
-| T16 | Done (CI proven, actionlint not run) | `a0a7159`, `8c3a47c` | First real run failed on `build-android` (NativeScript doctor rejected the runner: emulator SDK component missing, exit 127); fixed in PR #4 with `sdkmanager emulator platform-tools`; PR #4 run `43979354198` 6/6 green. actionlint still not run |
+| T16 | Done (CI proven, actionlint clean and in CI) | `a0a7159`, `8c3a47c` | First real run failed on `build-android` (NativeScript doctor rejected the runner: emulator SDK component missing, exit 127); fixed in PR #4 with `sdkmanager emulator platform-tools`; PR #4 run `43979354198` 6/6 green. actionlint still not run |
 | T17 | Done | `f323663` | commitlint rejected a non-conventional message |
 
 Gate at `f323663`: lint, typecheck, 14 tests, build, native-versions green.
@@ -362,7 +362,7 @@ build-ios (macos; dynamic + static linkage); shared setup action; no secrets.
 
 **Done when**:
 
-- [ ] `actionlint` (or equivalent) clean; jobs mirror the local gates
+- [x] `actionlint` clean (1.7.12, 2026-11-16) and run as the `actionlint` CI job; jobs mirror the local gates
 - [x] Workflow run proof: GitHub repo exists since 2026-11-16; PR #4 CI run 6/6 green (see the progress table)
 
 **Tests**: none
