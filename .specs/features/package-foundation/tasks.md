@@ -2,7 +2,7 @@
 
 **Design**: `.specs/features/package-foundation/design.md`
 **Testing**: `.specs/codebase/TESTING.md`
-**Status**: In Progress (2026-11-07): 15/17 done; T7 and the Android runtime part of T6/T14 blocked by B-001
+**Status**: Merged into `main` via PR #1 (2026-11-16); 15/17 done; T7 and the Android runtime part of T6/T14 blocked by B-001
 
 ## Progress
 
@@ -23,7 +23,7 @@
 | T13 | Done | `8cf43a4` | build + pack contents |
 | T14 | Partial | `bba94aa` | iOS simulator through `Notti.initialize`; Android APK bundle has the adapter, runtime blocked (B-001) |
 | T15 | Done | `fa41d5f` | 6 tests incl. drift fixtures |
-| T16 | Done (unproven) | `a0a7159` | YAML valid; actionlint not run (binary download denied); no GitHub repo yet |
+| T16 | Done (CI proven, actionlint not run) | `a0a7159`, `8c3a47c` | First real run failed on `build-android` (NativeScript doctor rejected the runner: emulator SDK component missing, exit 127); fixed in PR #4 with `sdkmanager emulator platform-tools`; PR #4 run `43979354198` 6/6 green. actionlint still not run |
 | T17 | Done | `f323663` | commitlint rejected a non-conventional message |
 
 Gate at `f323663`: lint, typecheck, 14 tests, build, native-versions green.
@@ -363,7 +363,7 @@ build-ios (macos; dynamic + static linkage); shared setup action; no secrets.
 **Done when**:
 
 - [ ] `actionlint` (or equivalent) clean; jobs mirror the local gates
-- [ ] Workflow run proof deferred until the GitHub repo exists (Julio's call); local gates are the evidence
+- [x] Workflow run proof: GitHub repo exists since 2026-11-16; PR #4 CI run 6/6 green (see the progress table)
 
 **Tests**: none
 **Gate**: build
