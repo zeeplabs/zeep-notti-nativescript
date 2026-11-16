@@ -1,5 +1,7 @@
 import { Notti } from 'nativescript-notti'
 
+import { addListeners, removeListeners } from './notti-events'
+
 const log = (message: string) => console.log(`[notti-demo] ${message}`)
 
 /** One entry per public method, used by the buttons and by the launch smoke run. */
@@ -18,6 +20,8 @@ export const actions: { label: string; run: () => void | Promise<void> }[] = [
   { label: 'setLocationSharingEnabled(false)', run: () => Notti.setLocationSharingEnabled(false) },
   { label: 'trackEvent', run: () => Notti.trackEvent('demo_event') },
   { label: 'getDeviceId', run: () => log(`getDeviceId -> ${Notti.getDeviceId()}`) },
+  { label: 'removeListeners', run: () => removeListeners() },
+  { label: 'addListeners', run: () => addListeners() },
   {
     label: 'requestPermission',
     run: async () => log(`requestPermission -> ${await Notti.requestPermission()}`),

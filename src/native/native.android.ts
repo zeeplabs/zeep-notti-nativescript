@@ -1,6 +1,45 @@
-import type { NottiNative } from './types';
+import type { NotificationPayload, NottiInAppAction, NottiInAppClick, NottiNative } from './types';
 
 const SDK_NAME = 'nativescript';
+
+function toRecord(map: java.util.Map<string, string> | null): { [key: string]: string } {
+  const record: { [key: string]: string } = {};
+  if (!map) return record;
+  const iterator = map.entrySet().iterator();
+  while (iterator.hasNext()) {
+    const entry = iterator.next();
+    record[entry.getKey()] = entry.getValue();
+  }
+  return record;
+}
+
+function toPayload(notification: com.zeeplabs.notti.NottiNotification): NotificationPayload {
+  return {
+    title: notification.getTitle() ?? null,
+    body: notification.getBody() ?? null,
+    data: toRecord(notification.getData()),
+  };
+}
+
+function toAction(action: com.zeeplabs.notti.NottiInAppAction | null): NottiInAppAction | null {
+  if (!action) return null;
+  const type = action.getType().name().toLowerCase();
+  return type === 'url' || type === 'deeplink' ? { type, value: action.getValue() } : null;
+}
+
+function toInAppClick(click: com.zeeplabs.notti.NottiInAppClick): NottiInAppClick {
+  return {
+    messageId: click.getMessageId(),
+    buttonId: click.getButtonId(),
+    action: toAction(click.getAction()),
+  };
+}
+
+function notificationListener(listener: (payload: NotificationPayload) => void) {
+  return new com.zeeplabs.notti.NottiNotificationListener({
+    onNotification: (notification) => listener(toPayload(notification)),
+  });
+}
 
 /**
  * Calls `notti-android` directly; no Kotlin source is needed in the plugin.
@@ -54,5 +93,25 @@ export function createAndroidNative(getContext: () => globalAndroid.content.Cont
     clearEmail: () => User().clearEmail(),
     setPhone: (phone) => User().setPhone(phone),
     clearPhone: () => User().clearPhone(),
+    addReceivedListener: (listener) =>
+      com.zeeplabs.notti.Notti.Notifications.addReceivedListener(notificationListener(listener)),
+    addClickedListener: (listener) =>
+      com.zeeplabs.notti.Notti.Notifications.addClickedListener(notificationListener(listener)),
+    addDeviceIdChangedListener: (listener) =>
+      Notti().addDeviceIdChangedListener(
+        new com.zeeplabs.notti.NottiDeviceIdListener({
+          onDeviceIdChanged: (deviceId) => listener(deviceId),
+        })
+      ),
+    addInAppClickListener: (listener) =>
+      com.zeeplabs.notti.Notti.InAppMessages.addClickListener(
+        new com.zeeplabs.notti.NottiInAppClickListener({
+          onClick: (click) => listener(toInAppClick(click)),
+        })
+      ),
+    takeInitialClick() {
+      const click = com.zeeplabs.notti.Notti.Notifications.takeInitialClick();
+      return click ? toPayload(click) : null;
+    },
   };
 }

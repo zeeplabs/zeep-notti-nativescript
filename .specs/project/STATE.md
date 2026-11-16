@@ -1,7 +1,7 @@
 # State
 
 **Last Updated:** 2026-11-07
-**Current Work:** `public-api` done on branch `feat/public-api` (T1-T6; Android runtime pending B-001). Next: specify `events-and-in-app`. `package-foundation` still 15/17 (B-001)
+**Current Work:** `events-and-in-app` done on branch `feat/events-and-in-app` (T1-T6; Android runtime and real push/launch tap pending a device). JS API now at RN parity. Next: specify `push-integration`. `package-foundation` 15/17 (B-001)
 
 ---
 
@@ -83,6 +83,13 @@
 **Reason:** RN contract; an install error must surface.
 **Impact:** public-api API-08..10.
 
+### AD-012: Native event listeners are attached on demand, one per JS listener (2026-11-07)
+
+**Decision:** each `addEventListener`/`addClickListener` attaches its own native listener and `remove()` detaches it; nothing is attached at import or `initialize`; `getInitialNotificationClick()` calls native `takeInitialClick()` directly. No TS click slot or buffer (Julio: "Sob demanda").
+**Reason:** both native SDKs keep the last tap for `takeInitialClick()` only while no clicked listener is attached and never replay clicks; mirroring that gives exactly-once delivery with zero plugin state.
+**Trade-off:** a clicked listener added before the launch tap arrives (e.g. in `app.ts`) gets it live and `getInitialNotificationClick()` returns null; apps handle both paths (README), as the native docs say.
+**Impact:** events-and-in-app design; README startup example.
+
 ---
 
 ## Active Blockers
@@ -118,6 +125,7 @@ M0 (backend `sdk_name`) gates the 0.1.0 release, not development.
 
 ## Deferred Ideas
 
+- [ ] Fix the stale "replays a buffered click" comment in react-native-notti `ios/NottiImpl.swift:34` (the iOS SDK never replays clicks) — Captured during: events-and-in-app
 - [ ] Flavor helpers (Angular service, Vue composable) — Captured during: project init
 - [ ] NSE target creation through a NativeScript hook — Captured during: project init
 

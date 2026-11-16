@@ -4,9 +4,9 @@ Notti push notifications and In-App Messages for NativeScript, on top of the nat
 (`NottiSDK` for iOS, `notti-android` for Android). All push, queue and In-App logic lives in the
 native SDKs; this plugin is a thin TypeScript layer.
 
-> **In development.** Initialization, identity, tags, email/phone, permission, subscription, location
-> sharing, device id and `trackEvent` are available. Listeners (notification received/clicked, device id
-> changed, initial click) and the In-App click listener follow the `react-native-notti` contract and land
+> **In development.** The JavaScript API matches `react-native-notti`: initialization, identity, tags,
+> email/phone, permission, subscription, location sharing, device id, `trackEvent`, notification and device
+> id events, the launch click and In-App clicks. Push setup docs (iOS capabilities, Android Firebase) are
 > next. Not published to npm yet.
 
 ## Requirements
@@ -67,7 +67,37 @@ first.
 **Tags:** `addTags`/`removeTags` ignore entries that are not strings, with a console warning that names the
 key (never the value).
 
-In-App Message links are never opened by the SDK: your app handles them (listener API coming next).
+### Events
+
+```ts
+import { Utils } from '@nativescript/core';
+import { Notti } from 'nativescript-notti';
+
+// At startup, after initialize: take the tap that launched the app, then listen for the next ones.
+const launchClick = await Notti.getInitialNotificationClick();
+if (launchClick) openScreenFor(launchClick.data);
+
+Notti.addEventListener('notificationClicked', (payload) => openScreenFor(payload.data));
+Notti.addEventListener('notificationReceived', (payload) => refreshInbox());
+Notti.addEventListener('deviceIdChanged', (deviceId) => console.log('Notti device', deviceId));
+
+// In-App Message links are never opened by the SDK: your app decides.
+Notti.InAppMessages.addClickListener(({ action }) => {
+  if (action?.type === 'url') Utils.openUrl(action.value);
+  if (action?.type === 'deeplink') navigateTo(action.value);
+});
+```
+
+- **Each tap reaches the app once, by one path.** While a `notificationClicked` listener is attached, taps
+  arrive live. A tap that arrives with none attached (usually the one that launched the app) is kept for
+  `getInitialNotificationClick()`, once. Handle both at startup, as above.
+- **Payloads:** `title` and `body` are `null` when the push has none; `data` is always an object (`{}` when
+  empty). An In-App `action` is `{ type: 'url' | 'deeplink', value }` or `null` (nothing for the app to do,
+  including the `push_permission` button, which the SDK runs itself).
+- **Received pushes:** on iOS the first `notificationReceived` listener also gets pushes received before it
+  was added; Android does not replay them.
+- Every listener returns `{ remove() }`; calling it more than once is safe. A listener that throws is logged
+  with `console.error` and never breaks the others.
 
 ## Android: Firebase setup
 
