@@ -174,24 +174,24 @@ without reading the RN docs.
 
 | Requirement ID | Story | Phase | Status |
 | --- | --- | --- | --- |
-| API-01 | P1: login | Tasks | In Tasks |
-| API-02 | P1: logout | Tasks | In Tasks |
-| API-03 | P1: User single-value methods (addTag, removeTag, email, phone) | Tasks | In Tasks |
-| API-04 | P1: addTags → NSDictionary / HashMap | Tasks | In Tasks |
-| API-05 | P1: removeTags → NSArray / ArrayList | Tasks | In Tasks |
-| API-06 | P1: non-string tag values/keys filtered with a warning (no values logged) | Tasks | In Tasks |
-| API-07 | P1: empty batches still forwarded | Tasks | In Tasks |
-| API-08 | P1: requestPermission resolves native boolean once | Tasks | In Tasks |
-| API-09 | P1: requestPermission resolves false, never rejects on denial | Tasks | In Tasks |
-| API-10 | P1: requestPermission rejects on synchronous native throw | Tasks | In Tasks |
-| API-11 | P1: setSubscription | Tasks | In Tasks |
-| API-12 | P1: setLocationSharingEnabled, no permission request | Tasks | In Tasks |
-| API-13 | P1: getDeviceId sync, null normalization | Tasks | In Tasks |
-| API-14 | P1: trackEvent | Tasks | In Tasks |
-| API-15 | P2: typed exports with JSDoc | Tasks | In Tasks |
-| API-16 | P2: README section | Tasks | In Tasks |
-| API-17 | Edge: pre-initialize calls forwarded, native decides | Tasks | In Tasks |
-| API-18 | Edge: destructured User methods work | Tasks | In Tasks |
+| API-01 | P1: login | Execute | Verified |
+| API-02 | P1: logout | Execute | Verified |
+| API-03 | P1: User single-value methods (addTag, removeTag, email, phone) | Execute | Verified |
+| API-04 | P1: addTags → NSDictionary / HashMap | Execute | Verified |
+| API-05 | P1: removeTags → NSArray / ArrayList | Execute | Verified |
+| API-06 | P1: non-string tag values/keys filtered with a warning (no values logged) | Execute | Verified |
+| API-07 | P1: empty batches still forwarded | Execute | Verified |
+| API-08 | P1: requestPermission resolves native boolean once | Execute | Verified (unit + iOS run; Android runtime B-001) |
+| API-09 | P1: requestPermission resolves false, never rejects on denial | Execute | Verified (unit + iOS run; Android runtime B-001) |
+| API-10 | P1: requestPermission rejects on synchronous native throw | Execute | Verified (unit + iOS run; Android runtime B-001) |
+| API-11 | P1: setSubscription | Execute | Verified |
+| API-12 | P1: setLocationSharingEnabled, no permission request | Execute | Verified |
+| API-13 | P1: getDeviceId sync, null normalization | Execute | Verified |
+| API-14 | P1: trackEvent | Execute | Verified |
+| API-15 | P2: typed exports with JSDoc | Execute | Verified |
+| API-16 | P2: README section | Execute | Verified |
+| API-17 | Edge: pre-initialize calls forwarded, native decides | Execute | Verified |
+| API-18 | Edge: destructured User methods work | Execute | Verified |
 
 **Coverage:** 18 total, 18 mapped to tasks, 0 unmapped
 

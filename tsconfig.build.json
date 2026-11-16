@@ -6,7 +6,14 @@
     "outDir": "dist",
     "declaration": true,
     "sourceMap": true,
-    "types": []
+    "types": [],
+    "lib": [
+      "ES2022",
+      "DOM"
+    ]
   },
-  "include": ["references.d.ts", "src"]
+  "include": [
+    "references.d.ts",
+    "src"
+  ]
 }
