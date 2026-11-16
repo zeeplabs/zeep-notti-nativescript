@@ -1,0 +1,25 @@
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+
+# node
+node_modules/
+npm-debug.log
+*.tgz
+
+# build output
+dist/
+
+# demo app (NativeScript generated)
+demo/platforms/
+demo/hooks/
+demo/.ns-build-pnpm-lock.yaml
+
+# never commit credentials or Firebase configs
+demo/app/config.local.ts
+google-services.json
+GoogleService-Info.plist
+
+# local Claude Code state
+.claude/

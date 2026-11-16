@@ -27,5 +27,9 @@
 
 - Tests are co-located in the task that creates the code (no separate test tasks).
 - Unit tests never import `@nativescript/core` or touch real native globals; adapters receive stubs.
+- iOS builds on a Homebrew-CocoaPods Mac need (L-001):
+  `export PATH=/opt/homebrew/opt/ruby/bin:$PATH`
+  `export GEM_PATH=/opt/homebrew/Cellar/cocoapods/1.17.0/libexec:$(ruby -e 'puts Gem.default_path.join(":")')`
+- Simulator console: `xcrun simctl spawn <udid> log show --last 5m --predicate 'process == "demo"'` (NativeScript logs as `CONSOLE LOG:`).
 - Android builds need JDK 17 (default JDK 25 does not run Gradle 8.14.3).
 - Never commit real `appId`/`clientKey` or a real `google-services.json`.

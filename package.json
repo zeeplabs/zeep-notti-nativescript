@@ -1,0 +1,78 @@
+{
+  "name": "nativescript-notti",
+  "version": "0.0.0",
+  "description": "Notti push notifications and In-App Messages for NativeScript, on top of the native Notti iOS and Android SDKs",
+  "main": "dist/index",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "platforms",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "nativescript",
+    "push-notifications",
+    "in-app-messages",
+    "notti",
+    "ios",
+    "android"
+  ],
+  "author": "Julio Sousa",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeeplabs/zeep-notti-nativescript.git"
+  },
+  "nativescript": {
+    "platforms": {
+      "ios": "9.0.0",
+      "android": "9.0.0"
+    }
+  },
+  "notti": {
+    "ios": "0.2.0",
+    "android": "0.2.0"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && cp src/index.d.ts dist/index.d.ts",
+    "prepare": "pnpm build"
+  },
+  "peerDependencies": {
+    "@nativescript/core": ">=9.0.0 <10"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^21.2.4",
+    "@eslint/js": "^9.39.5",
+    "@nativescript/core": "~9.1.0",
+    "@nativescript/types": "~9.1.0",
+    "@types/node": "^24.19.2",
+    "commitlint": "^21.2.4",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.7",
+    "lefthook": "^2.2.2",
+    "prettier": "^3.9.10",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.1",
+    "vitest": "^5.1.0"
+  },
+  "packageManager": "pnpm@10.15.0",
+  "prettier": {
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "useTabs": false,
+    "printWidth": 100
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
+}

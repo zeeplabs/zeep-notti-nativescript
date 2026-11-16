@@ -1,0 +1,6 @@
+platform :ios, '15.0'
+
+# Keep in step with package.json "notti.ios" (scripts/check-native-versions.js).
+# `~>` lets 0.2.x patches in; a new minor may change the @_spi(Wrapper) surface
+# the shim uses, so it needs a deliberate bump.
+pod 'NottiSDK', '~> 0.2.0'

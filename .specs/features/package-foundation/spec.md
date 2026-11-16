@@ -171,25 +171,25 @@ so that a broken native integration is caught before merge.
 
 | Requirement ID | Story | Phase | Status |
 | --- | --- | --- | --- |
-| PKG-01 | P1: Skeleton - install with Node/pnpm/ns only | Tasks | In Tasks |
-| PKG-02 | P1: Skeleton - package name, peer dep, files list | Tasks | In Tasks |
-| PKG-03 | P1: Skeleton - Podfile + include.gradle, one version source | Tasks | In Tasks |
-| PKG-04 | P1: Skeleton - lint/typecheck strict | Tasks | In Tasks |
-| PKG-05 | P1: Skeleton - lefthook + commitlint | Tasks | In Tasks |
-| PKG-06 | P1: iOS shim - compiles with `@_spi(Wrapper)` | Tasks | In Tasks |
-| PKG-07 | P1: iOS shim - TS reaches wrapper initialize | Tasks | In Tasks |
-| PKG-08 | P1: iOS shim - both linkage modes with `-package-name` | Tasks | In Tasks |
-| PKG-09 | P1: iOS shim - fallback recorded if unsupported | Tasks | In Tasks |
-| PKG-10 | P1: Android - resolves from Maven Central | Tasks | In Tasks |
-| PKG-11 | P1: Android - TS calls `initializeForWrapper` | Tasks | In Tasks |
-| PKG-12 | P1: Android - Kotlin/AGP/compileSdk minimums handled | Tasks | In Tasks |
-| PKG-13 | P1: Android - google-services on the app module only | Tasks | In Tasks |
-| PKG-14 | P1: Seam - interface + platform adapters | Tasks | In Tasks |
-| PKG-15 | P1: Seam - Node unit tests with a fake | Tasks | In Tasks |
-| PKG-16 | P1: Seam - native globals stubbed | Tasks | In Tasks |
-| PKG-17 | P2: CI - lint/types/tests/demo builds | Tasks | In Tasks |
-| PKG-18 | P2: CI - native version drift check | Tasks | In Tasks |
-| PKG-19 | P2: CI - no secrets, no real Firebase config | Tasks | In Tasks |
+| PKG-01 | P1: Skeleton - install with Node/pnpm/ns only | Execute | Verified |
+| PKG-02 | P1: Skeleton - package name, peer dep, files list | Execute | Verified |
+| PKG-03 | P1: Skeleton - Podfile + include.gradle, one version source | Execute | Verified |
+| PKG-04 | P1: Skeleton - lint/typecheck strict | Execute | Verified |
+| PKG-05 | P1: Skeleton - lefthook + commitlint | Execute | Verified |
+| PKG-06 | P1: iOS shim - compiles with `@_spi(Wrapper)` | Execute | Verified |
+| PKG-07 | P1: iOS shim - TS reaches wrapper initialize | Execute | Verified |
+| PKG-08 | P1: iOS shim - both linkage modes with `-package-name` | Execute | Verified |
+| PKG-09 | P1: iOS shim - fallback recorded if unsupported | Execute | Verified (not needed) |
+| PKG-10 | P1: Android - resolves from Maven Central | Execute | Verified |
+| PKG-11 | P1: Android - TS calls `initializeForWrapper` | Execute | Implementing (build only, B-001) |
+| PKG-12 | P1: Android - Kotlin/AGP/compileSdk minimums handled | Execute | Verified |
+| PKG-13 | P1: Android - google-services on the app module only | Execute | Implementing (S4 blocked, B-001) |
+| PKG-14 | P1: Seam - interface + platform adapters | Execute | Verified |
+| PKG-15 | P1: Seam - Node unit tests with a fake | Execute | Verified |
+| PKG-16 | P1: Seam - native globals stubbed | Execute | Verified |
+| PKG-17 | P2: CI - lint/types/tests/demo builds | Execute | Implementing (no repo/run yet) |
+| PKG-18 | P2: CI - native version drift check | Execute | Verified |
+| PKG-19 | P2: CI - no secrets, no real Firebase config | Execute | Verified |
 
 **Coverage:** 19 total, 19 mapped to tasks, 0 unmapped
 

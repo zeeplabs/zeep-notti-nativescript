@@ -1,0 +1,13 @@
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      glob: "*.{js,mjs,ts}"
+      run: pnpm exec eslint {staged_files}
+    types:
+      glob: "*.{js,mjs,ts}"
+      run: pnpm exec tsc -p tsconfig.json
+commit-msg:
+  commands:
+    commitlint:
+      run: pnpm exec commitlint --edit {1}
