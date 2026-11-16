@@ -27,20 +27,20 @@
 
 ### Features
 
-**package-foundation** - IN PROGRESS (2026-11-07; 15/17 tasks, branch `feat/package-foundation`; Android runtime + google-services spike blocked by B-001)
+**package-foundation** - MERGED, T7 open (2026-11-16: PR #1 on `main`; 15/17 tasks; Android runtime + google-services spike blocked by B-001; CI proven green on PR #4)
 
 - Single-package repo (AD-003): `src/` (TS API), `platforms/ios` (Podfile + Swift shim), `platforms/android` (`include.gradle`), `demo/` NativeScript Core app, pnpm, TS strict, lint, lefthook, commitlint
 - Risk spikes before any API work: Swift shim with `@_spi(Wrapper) import NottiSDK` compiles in a NativeScript iOS build; `-package-name` flag survives the NativeScript Podfile merge (static and `use_frameworks!`); `notti-android` 0.2.0 (Kotlin 2.0, compileSdk 36, AGP 9 built) builds inside a NativeScript 9 Android app; `google-services` plugin applied from the app's `App_Resources`
 - Minimum NativeScript version, iOS deployment target and Android min/compile SDK fixed
 - CI skeleton (lint, typecheck, unit tests, demo build iOS and Android)
 
-**public-api** - DONE except Android runtime (2026-11-07; T1-T6 on branch `feat/public-api`, 56 tests; iOS simulator ran all 15 methods; B-001)
+**public-api** - DONE except Android runtime (2026-11-07; T1-T6, 56 tests; iOS simulator ran all 15 methods; B-001; merged into `main` via PR #2 on 2026-11-16)
 
 - `Notti.initialize` through the wrapper entry points (`sdkName: "nativescript"`, `sdkVersion` = package version, `opensInAppURLs: false`)
 - `requestPermission`, `login`/`logout`, `setSubscription`, `setLocationSharingEnabled`, `getDeviceId`, `trackEvent`; `User` tags/email/phone
 - TS types and argument mapping behind a native seam, unit-tested on both platform adapters
 
-**events-and-in-app** - DONE except device checks (2026-11-07; T1-T6 on branch `feat/events-and-in-app`, 96 tests; iOS simulator listeners attach/remove; Android build generated the listener proxies; B-001)
+**events-and-in-app** - DONE except device checks (2026-11-07; T1-T6, 96 tests; merged into `main` via PR #3 on 2026-11-16; iOS simulator listeners attach/remove; Android build generated the listener proxies; B-001)
 
 - `notificationReceived`, `notificationClicked`, `deviceIdChanged` listeners with removable subscriptions
 - Cold-start initial click (take-then-listen semantics, as in RN), reload/HMR safe
