@@ -135,7 +135,7 @@ M0 (backend `sdk_name`) gates the 0.1.0 release, not development.
 
 - [x] `git init` done locally (2026-11-07); [x] `zeeplabs/zeep-notti-nativescript` created and pushed, CI proven (2026-11-16: PRs #1-#4 merged; `main` at `7c615a1`)
 - [ ] Decide whether CI should also run on PRs not targeting `main`: `ci.yml` only triggers on `push` to `main` and `pull_request` to `main`, so stacked PRs (#2, #3) ran no CI and merged without a green run
-- [ ] Run actionlint on `.github/` (download was denied in-session; needs Julio's OK or a local install)
+- [x] Run actionlint on `.github/workflows/` (2026-11-16: 1.7.12 via Homebrew; one SC2086 on the `sdkmanager` step, fixed by quoting; now a CI job pinned to `@v1.7.12`). It does not check the composite action `.github/actions/setup/action.yml`
 - [ ] Confirm the CocoaPods trunk read-only date before relying on trunk for future `NottiSDK` releases
 - [ ] Note: the local `zeep-notti-react-native` checkout is on `spike/ios-native-sdk` (0.8.0, dirty); read the RN reference from `origin/main`
 

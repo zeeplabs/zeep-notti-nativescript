@@ -53,6 +53,16 @@ jobs:
       - name: Check native SDK versions
         run: node scripts/check-native-versions.js
 
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Lint workflows
+        # Pinned version; shellcheck comes preinstalled on the runner.
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
+
   build-android:
     runs-on: ubuntu-latest
     steps:
@@ -71,7 +81,7 @@ jobs:
       - name: Install the emulator SDK component
         # `ns build` runs the NativeScript doctor first and aborts when the emulator
         # component is missing, even though a build never uses it.
-        run: $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager emulator platform-tools
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" emulator platform-tools'
 
       - name: Use the example demo config
         run: cp demo/app/config.example.ts demo/app/config.local.ts
